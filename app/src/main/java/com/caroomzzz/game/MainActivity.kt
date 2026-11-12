@@ -20,13 +20,13 @@ class MainActivity:Activity() {
     private lateinit var aim:SeekBar
     private var mode="solo"
     private var isHost=true
-    private var aiPending=false
+    private var aiPending=false\n    private var syncFrame=0\n    private var lastSync=""
     private val handler=Handler(Looper.getMainLooper())
     private val tick=object:Runnable {
         override fun run() {
             if(::physics.isInitialized && mode!="client") {
                 physics.step()
-                if(mode=="host") lan.send("STATE|"+physics.encode())
+                if(mode=="host") { syncFrame++; val snapshot=physics.encode(); if(snapshot!=lastSync && syncFrame%3==0) { lan.send("STATE|"+snapshot); lastSync=snapshot } }
                 if(mode=="solo" && !physics.moving && physics.activePlayer==1 && !aiPending) {
                     aiPending=true
                     handler.postDelayed({ if(mode=="solo" && !physics.moving && physics.activePlayer==1) physics.shoot((PI/2).toFloat(),.48f); aiPending=false },650)
