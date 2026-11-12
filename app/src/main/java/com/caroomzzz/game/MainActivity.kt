@@ -75,7 +75,7 @@ class MainActivity:Activity() {
             .setNegativeButton("CANCEL",null).show()
     }
     private fun startGame(which:String) {
-        mode=which; physics=CarromPhysics(); lan=LanManager({ s -> runOnUiThread { if(::status.isInitialized) status.text=s } },{ msg -> runOnUiThread { receive(msg) } })
+        mode=which; physics=CarromPhysics(); lan=LanManager({ s -> runOnUiThread { if(::status.isInitialized) status.text=s; if(s=="Player connected" && mode=="host") lan.send("STATE|"+physics.encode()) } },{ msg -> runOnUiThread { receive(msg) } })
         val b=base(); b.setPadding(10,8,10,8)
         val top=LinearLayout(this).apply { gravity=Gravity.CENTER_VERTICAL }
         top.addView(button("‹") { lan.close(); showHome() },LinearLayout.LayoutParams(54,48))
@@ -93,7 +93,7 @@ class MainActivity:Activity() {
         b.addView(text("SHOT POWER",11f,0xffffdf9a.toInt()))
         power=SeekBar(this).apply { max=100; progress=55 }; b.addView(power)
         b.addView(text("AIM DIRECTION",11f,0xffffdf9a.toInt()))
-        aim=SeekBar(this).apply { max=180; progress=90 }; b.addView(aim)
+        aim=SeekBar(this).apply { max=180; progress=if(physics.activePlayer==0) 45 else 135 }; b.addView(aim)
         b.addView(button("STRIKE  ●") { takeShot() },LinearLayout.LayoutParams(-1,54).apply { topMargin=5 })
         setContentView(b)
         handler.removeCallbacks(tick); handler.post(tick)
