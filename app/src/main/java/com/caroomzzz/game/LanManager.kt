@@ -60,7 +60,7 @@ class LanManager(private val status:(String)->Unit, private val message:(String)
         try { val r=BufferedReader(InputStreamReader(s.getInputStream())); while(running) { val line=r.readLine()?:break; message(line) } }
         catch(_:Exception) {} finally { status("Connection closed") }
     }
-    fun send(line:String) { pool.execute { try { writer?.println(line) } catch(_:Exception){} } }
+    fun send(line:String) { val out=writer ?: return; try { synchronized(out) { out.println(line) } } catch(_:Exception){} }
     fun close() { running=false; try { socket?.close() } catch(_:Exception){}; writer=null }
     private fun localIp():String = try { NetworkInterface.getNetworkInterfaces().toList().flatMap { it.inetAddresses.toList() }.first { !it.isLoopbackAddress && it is Inet4Address }.hostAddress ?: "192.168.43.1" } catch(_:Exception) { "192.168.43.1" }
 }
