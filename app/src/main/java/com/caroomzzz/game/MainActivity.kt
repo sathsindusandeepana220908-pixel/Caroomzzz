@@ -22,7 +22,7 @@ class MainActivity:Activity() {
     private var isHost=true
     private var aiPending=false
     private var syncFrame=0
-    private var lastSync=""
+    private var lastSync=""\n    private var lastTurn=-1
     private val handler=Handler(Looper.getMainLooper())
     private val tick=object:Runnable {
         override fun run() {
@@ -33,7 +33,7 @@ class MainActivity:Activity() {
                     aiPending=true
                     handler.postDelayed({ if(mode=="solo" && !physics.moving && physics.activePlayer==1) physics.shoot((PI/2).toFloat(),.48f); aiPending=false },650)
                 }
-                if(::board.isInitialized) board.invalidate()
+                if(physics.activePlayer!=lastTurn && !physics.moving) { lastTurn=physics.activePlayer; if(::position.isInitialized) position.progress=((physics.strikerX-.16f)/.68f*100).toInt().coerceIn(0,100); if(::aim.isInitialized) aim.progress=if(physics.activePlayer==0) 45 else 135 }\n                if(::board.isInitialized) board.invalidate()
                 if(::score.isInitialized) score.text="YOU  ${physics.scores[0]}       ${if(mode=="solo") "AI" else "PLAYER 2"}  ${physics.scores[1]}"
             }
             handler.postDelayed(this,16)
@@ -114,7 +114,7 @@ class MainActivity:Activity() {
     }
     private fun receive(line:String) {
         when {
-            line.startsWith("STATE|") && mode=="client" -> { physics.decode(line.substringAfter("|")); position.progress=((physics.strikerX-.16f)/.68f*100).toInt().coerceIn(0,100); board.invalidate(); score.text="YOU  ${physics.scores[1]}       PLAYER 1  ${physics.scores[0]}"; status.text=if(physics.activePlayer==1) "YOUR TURN" else "OPPONENT'S TURN" }
+            line.startsWith("STATE|") && mode=="client" -> { physics.decode(line.substringAfter("|")); position.progress=((physics.strikerX-.16f)/.68f*100).toInt().coerceIn(0,100); aim.progress=if(physics.activePlayer==1) 135 else 45; board.invalidate(); score.text="YOU  ${physics.scores[1]}       PLAYER 1  ${physics.scores[0]}"; status.text=if(physics.activePlayer==1) "YOUR TURN" else "OPPONENT'S TURN" }
             line.startsWith("SHOT|") && mode=="host" -> {
                 if(physics.activePlayer==1 && !physics.moving) { val a=line.split("|"); physics.placeStriker(.16f+(a.getOrNull(3)?.toIntOrNull()?:50)/100f*.68f); physics.shoot((a.getOrNull(1)?.toFloatOrNull()?:1f),a.getOrNull(2)?.toFloatOrNull()?:.5f) }
             }
