@@ -20,7 +20,9 @@ class MainActivity:Activity() {
     private lateinit var aim:SeekBar
     private var mode="solo"
     private var isHost=true
-    private var aiPending=false\n    private var syncFrame=0\n    private var lastSync=""
+    private var aiPending=false
+    private var syncFrame=0
+    private var lastSync=""
     private val handler=Handler(Looper.getMainLooper())
     private val tick=object:Runnable {
         override fun run() {
