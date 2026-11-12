@@ -68,6 +68,7 @@ class CarromPhysics {
         if(p.isNotEmpty() && p[0].isNotBlank()) p[0].split(";").forEach { v -> runCatching { val a=v.split(","); disks.add(Disk(a[0].toFloat(),a[1].toFloat(),a[2].toFloat(),a[3].toFloat(),a[4].toLong().toInt(),a[5].toBoolean())) } }
         if(p.size>1) activePlayer=p[1].toIntOrNull()?:0
         if(p.size>2) p[2].split(",").take(2).forEachIndexed { i,v -> scores[i]=v.toIntOrNull()?:0 }
-        if(p.size>3) { val st=p[3].split(","); strikerX=st.getOrNull(0)?.toFloatOrNull()?:strikerX; strikerY=st.getOrNull(1)?.toFloatOrNull()?:strikerY }\n        moving=disks.any { abs(it.vx)+abs(it.vy)>.00025f }
+        if(p.size>3) { val st=p[3].split(","); strikerX=st.getOrNull(0)?.toFloatOrNull()?:strikerX; strikerY=st.getOrNull(1)?.toFloatOrNull()?:strikerY }
+        moving=disks.any { abs(it.vx)+abs(it.vy)>.00025f }
     }
 }
