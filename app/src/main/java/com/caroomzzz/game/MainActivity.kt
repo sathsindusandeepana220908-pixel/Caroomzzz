@@ -22,7 +22,8 @@ class MainActivity:Activity() {
     private var isHost=true
     private var aiPending=false
     private var syncFrame=0
-    private var lastSync=""\n    private var lastTurn=-1
+    private var lastSync=""
+    private var lastTurn=-1
     private val handler=Handler(Looper.getMainLooper())
     private val tick=object:Runnable {
         override fun run() {
@@ -33,7 +34,8 @@ class MainActivity:Activity() {
                     aiPending=true
                     handler.postDelayed({ if(mode=="solo" && !physics.moving && physics.activePlayer==1) physics.shoot((PI/2).toFloat(),.48f); aiPending=false },650)
                 }
-                if(physics.activePlayer!=lastTurn && !physics.moving) { lastTurn=physics.activePlayer; if(::position.isInitialized) position.progress=((physics.strikerX-.16f)/.68f*100).toInt().coerceIn(0,100); if(::aim.isInitialized) aim.progress=if(physics.activePlayer==0) 45 else 135 }\n                if(::board.isInitialized) board.invalidate()
+                if(physics.activePlayer!=lastTurn && !physics.moving) { lastTurn=physics.activePlayer; if(::position.isInitialized) position.progress=((physics.strikerX-.16f)/.68f*100).toInt().coerceIn(0,100); if(::aim.isInitialized) aim.progress=if(physics.activePlayer==0) 45 else 135 }
+                if(::board.isInitialized) board.invalidate()
                 if(::score.isInitialized) score.text="YOU  ${physics.scores[0]}       ${if(mode=="solo") "AI" else "PLAYER 2"}  ${physics.scores[1]}"
             }
             handler.postDelayed(this,16)
